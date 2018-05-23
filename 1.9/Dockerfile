@@ -1,8 +1,8 @@
 # --------------------------------------------------
-#  Dockerfile for installing XpressEngine 3
+#  Dockerfile for installing XpressEngine 1.9
 # --------------------------------------------------
 
-FROM php:7.0.13-apache
+FROM php:7.2-apache
 
 MAINTAINER Sunggun Yu <sunggun.dev@gmail.com>
 
@@ -10,23 +10,24 @@ MAINTAINER Sunggun Yu <sunggun.dev@gmail.com>
 RUN set -x \
     && apt-get update \
     && apt-get install -y \
+    apt-utils \
     wget \
     unzip \
     ca-certificates \
     apt-transport-https \
-    git
+    git \
+    zlib1g-dev \
+    libpng-dev \
+    libcurl4-openssl-dev
 
 # Download XpressEngine package
 RUN set -x \
-    && wget -O /tmp/xpressengine.zip http://start.xpressengine.io/latest.zip
+    && wget -O /tmp/xe.zip https://github.com/xpressengine/xe-core/releases/download/1.9.6/xe.1.9.6.zip
 
 # Install required PHP extensions for XpressEngine
 RUN set -x \
-    && apt-get install -y \
-    zlib1g-dev \
-    libpng-dev \
-    libcurl4-openssl-dev \
-    && docker-php-ext-install gd zip mbstring tokenizer curl pdo pdo_mysql
+    && docker-php-ext-install gd mysqli pdo pdo_mysql \
+    && docker-php-ext-install zip mbstring tokenizer curl fileinfo
 
 # Enableing the Apache2 rewrite module
 RUN set -x \
@@ -34,12 +35,12 @@ RUN set -x \
 
 # Extract the XpressEngine package into `/var/www/html` directory which is default directory of Apache2
 RUN set -x \
-    && unzip /tmp/xpressengine.zip -d /var/www/html \
-    && mkdir -p /var/www/html/files \
+    && unzip /tmp/xe.zip -d /var/www/html \
     && chown -R www-data:www-data /var/www/html \
-    && chmod -R 707 /var/www/html/files
+    && mkdir -p /var/www/html/files \
+    && chmod -R 0707 /var/www/html/files
 
 # Cleanup
 RUN set -x \
     && rm -rf /var/lib/apt/lists/* \
-    && rm /tmp/xpressengine.zip
+    && rm /tmp/xe.zip

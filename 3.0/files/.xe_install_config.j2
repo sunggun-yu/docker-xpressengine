@@ -1,0 +1,17 @@
+---
+site:
+    url: {{ site_url | default('http://localhost') }}
+    timezone: {{ site_timezone | default('Asia/Seoul') }}
+    locale: {{ site_locale | default('ko') }}
+admin:
+    email: {{ admin_email | default('admin@localhost.local') }}
+    password: {{ admin_password | default('admin') }}
+    display_name: {{ admin_display_name | default('admin') }}
+database:
+    driver: {{ database_driver | default('mysql') }}
+    host: {{ database_host | default('mysql') }}
+    port: {{ database_port | default(3306) }}
+    dbname: {{ database_dbname | default('xe') }}
+    username: {{ database_username | default('root') }}
+    password: {{ database_password | default('root') }}
+    prefix: {{ database_prefix | default('xe') }}
